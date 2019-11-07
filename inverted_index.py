@@ -1,22 +1,23 @@
 # inverted_index.py
 # Atef Kai Benothman
 
+import re
 import os
 import json
 from nltk.stem import PorterStemmer
 from bs4 import BeautifulSoup
 from bs4.element import Comment
 
+# TODO:  Words in bold, in headings (h1, h2, h3), and in titles should be 
+#        treated as more important than the other words.
+
 # Stems the block of text into a list
 def stem_text(text):
     stemmer = PorterStemmer()
-    text = text.split()
+    text = re.findall('[a-zA-Z0-9_]+', text.lower(), re.ASCII)
     # Uses a porter stemmer to stem words
     stemmed_text = [stemmer.stem(i) for i in text]
-
-    for i in range(len(text)):
-        print(i, text[i], "->", stemmed_text[i])
-
+    return stemmed_text
 
 
 # Returns the validatity of an element. If it is valid, return True. Else, return False.
@@ -41,23 +42,24 @@ def extract_text(file_path):
         visible_texts = filter(get_text, all_text)
         text = u" ".join(t.strip() for t in visible_texts)
         
-        stem_text(text)
+        stemmed_text = stem_text(text)
+        print(stemmed_text)
 
 
 # Iterates through all json files in directory
 def iterate_all_files(root_dir):
     for dirName, subdirList, fileList in os.walk(root_dir):
-        if dirName == "DEV 2/today_uci_edu": # CHANGE THIS
+        #if dirName == "DEV 2/today_uci_edu": # CHANGE THIS
+        print()
+        print("dirName: ", dirName)
+        print("fileList: ", len(fileList))
+        print("=====================================")
+        for i in range(len(fileList)):
+            file_path = dirName + "/" + fileList[i]
+            print(i, file_path)
+            extract_text(file_path)
             print()
-            print("dirName: ", dirName)
-            print("fileList: ", len(fileList))
-            print("=====================================")
-            for i in range(len(fileList)):
-                file_path = dirName + "/" + fileList[i]
-                print(i, file_path)
-                extract_text(file_path)
-                print()
-            print()
+        print()
 
 
 if __name__ == "__main__":
