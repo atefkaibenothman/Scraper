@@ -5,12 +5,15 @@ import re
 import os
 import ast
 import json
+import psutil
 from nltk.stem import PorterStemmer
 from bs4 import BeautifulSoup
 from bs4.element import Comment
 
 # TODO:  Words in bold, in headings (h1, h2, h3), and in titles should be 
 #        treated as more important than the other words.
+
+# TODO: Sort index before writing to file
 
 # Globals
 total_docs = 0
@@ -66,6 +69,8 @@ def add_to_index_with_text(stemmed_text):
             else:
                 index[term][doc_id] += 1
 
+    #print(index)
+
     # Check if the length of the index exceeds 1500
     # If it does, write the index to file and clear it
     if len(index.keys()) >= 10000:
@@ -75,27 +80,27 @@ def add_to_index_with_text(stemmed_text):
         # merge_index()
         index = dict()
 
-def merge_index():
-    with open("index.txt", "r") as f:
-        x = f.read().splitlines()
-        res = ast.literal_eval(x)
+# def merge_index():
+#     with open("index.txt", "r") as f:
+#         x = f.read().splitlines()
+#         res = ast.literal_eval(x)
         
-        # for k,v in sorted(res.items(),key=lambda x: x[0]):
-        #     print(k,"->",v)
+#         # for k,v in sorted(res.items(),key=lambda x: x[0]):
+#         #     print(k,"->",v)
 
-        test_dict = dict()
-        for k,v in res.items():
-            if k not in test_dict:
-                test_dict[k] = v
-            else:
-                test_dict[k].update(v)
+#         test_dict = dict()
+#         for k,v in res.items():
+#             if k not in test_dict:
+#                 test_dict[k] = v
+#             else:
+#                 test_dict[k].update(v)
 
-    print("MERGED")
-    with open("index_raw.txt", "a") as f:
-        for k,v in test_dict.items():
-            f.write(str(k)+" -> "+str(v)+"\n")
+    # print("MERGED")
+    # with open("index_raw.txt", "a") as f:
+    #     for k,v in test_dict.items():
+    #         f.write(str(k)+" -> "+str(v)+"\n")
 
-    test_dict = dict()
+    # test_dict = dict()
 
 # Writes the mapping in doc_list to file and clears the mapping
 def write_to_doc_file():
@@ -152,6 +157,8 @@ def iterate_all_files(root_dir):
                 total_docs += 1
                 file_path = dirName + "/" + fileList[i]
                 print("-------------------------------------")
+                process = psutil.Process(os.getpid())
+                print(process.memory_info().rss)
                 print(i, file_path)
                 print("TOTAL NUM FILES: ", total_docs)
                 print("LEN OF DOC LIST: ", len(doc_list))
