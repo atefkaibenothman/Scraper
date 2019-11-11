@@ -73,34 +73,13 @@ def add_to_index_with_text(stemmed_text):
 
     # Check if the length of the index exceeds 1500
     # If it does, write the index to file and clear it
-    if len(index.keys()) >= 10000:
+    if len(index.keys()) >= 1000000000:
         print("writing")
         write_to_index_file()
         # print("merging")
         # merge_index()
         index = dict()
 
-# def merge_index():
-#     with open("index.txt", "r") as f:
-#         x = f.read().splitlines()
-#         res = ast.literal_eval(x)
-        
-#         # for k,v in sorted(res.items(),key=lambda x: x[0]):
-#         #     print(k,"->",v)
-
-#         test_dict = dict()
-#         for k,v in res.items():
-#             if k not in test_dict:
-#                 test_dict[k] = v
-#             else:
-#                 test_dict[k].update(v)
-
-    # print("MERGED")
-    # with open("index_raw.txt", "a") as f:
-    #     for k,v in test_dict.items():
-    #         f.write(str(k)+" -> "+str(v)+"\n")
-
-    # test_dict = dict()
 
 # Writes the mapping in doc_list to file and clears the mapping
 def write_to_doc_file():
